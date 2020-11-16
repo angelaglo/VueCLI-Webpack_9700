@@ -64,7 +64,7 @@
     style="margin-top: 20px"
     v-if="selected.length>0">
       <v-card-title>
-        <p>Delete Multiple</p>
+        <p class="bambang">Delete Multiple</p>
       </v-card-title>
         <v-card-subtitle>
         <v-list flat>
@@ -271,7 +271,8 @@ export default {
     },
      deleteAll() {
         for (var i = 0; i < this.selected.length; i++) {
-            this.todos.splice(this.todos.indexOf(this.selected[i]), 1)
+            var index = this.selected[i];
+            this.todos.splice(this.todos.indexOf(index), 1)
         }
         for (var j = 0; j < this.selected.length; j++) {
             this.selected.splice(this.selected.indexOf(this.selected), 1)
