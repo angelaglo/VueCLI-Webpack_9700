@@ -23,7 +23,18 @@
         <v-spacer></v-spacer>       
         <v-btn color="success" dark @click="dialog = true"> Tambah </v-btn>
       </v-card-title>
-      <v-data-table :headers="headers" :items="todos" :search="search" :single-expand="singleExpand" :expanded.sync="expanded" item-key="task" show-expand>
+      <v-data-table 
+      v-model="selected"
+      :headers="headers" 
+      :items="todos" 
+      :search="search" 
+      :single-expand="singleExpand" 
+      :expanded.sync="expanded"
+      :single-select="singleSelect" 
+      item-key="task"
+      show-select
+      singleitem-key="task"
+      show-expand >
           <v-switch
             v-model="singleExpand"
             label="Single expand"
@@ -47,6 +58,36 @@
         </template>
       </v-data-table>
     </v-card>
+
+    <v-divider></v-divider>
+    <v-card 
+    style="margin-top: 20px"
+    v-if="selected.length>0">
+      <v-card-title>
+        <p>Delete Multiple</p>
+      </v-card-title>
+        <v-card-subtitle>
+        <v-list flat>
+          <v-list-item
+            v-for="(item, i) in selected"
+            :key="i"
+          >
+            <v-list-item-content>
+              <li v-text="item.task"></li>
+            </v-list-item-content>
+          </v-list-item>
+      </v-list>
+      </v-card-subtitle>
+      <v-btn
+        depressed
+        color="error"
+        style="margin-left: 10px; margin-bottom: 15px"
+        @click="deleteAll()"
+      >
+        Delete All
+      </v-btn>
+    </v-card>
+
     <v-dialog v-model="dialog" persistent max-width="600px">
       <v-card>
         <v-card-title>
@@ -125,7 +166,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </v-main>
 </template>
 <script>
@@ -133,6 +173,7 @@ export default {
   name: "List",
   data() {
     return {
+      selected: [],
       activeColor: 'red',
       search: null,
       searchBy: null,
@@ -150,6 +191,7 @@ export default {
         },
         { text: "Priority", value: "priority" },
         { text: "Actions", value: "actions" },
+        { text: "",value: "data-table-select"},
       ],
       todos: [
         {
@@ -227,13 +269,15 @@ export default {
         return 'green';
       }
     },
-    sortBy(){
-        let finds = this.sorting;
-        var fil = this.todos.filter(function(x){
-            return x.priority == finds;
-        })
-        return fil;
-    }
+     deleteAll() {
+        for (var i = 0; i < this.selected.length; i++) {
+            this.todos.splice(this.todos.indexOf(this.selected[i]), 1)
+        }
+        for (var j = 0; j < this.selected.length; j++) {
+            this.selected.splice(this.selected.indexOf(this.selected), 1)
+        }
+        this.selected = [];
+    },
   },
 };
 </script>
